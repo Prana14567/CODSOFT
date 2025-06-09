@@ -2,43 +2,37 @@ import streamlit as st
 import joblib
 import numpy as np
 
-model = joblib.load('final_model.pkl')
+model = joblib.load('final_model.pkl')  
 scaler = joblib.load('scaler.pkl')
 
 
 st.title("🚢 Titanic Survival Prediction")
 
-st.write("Enter passenger details below:")
-
-# Inputs
-age = st.number_input("Age", min_value=0.0, max_value=100.0, step=1.0)
-fare = st.number_input("Fare", min_value=0.0, step=0.1)
+age = st.number_input("Age", min_value=0.0, step=1.0)
+fare = st.number_input("Fare", min_value=0.0, step=1.0)
 pclass = st.selectbox("Passenger Class", [1, 2, 3])
 sex = st.selectbox("Sex", ['Male', 'Female'])
+embarked_q = st.checkbox("Embarked at Q?")
+embarked_s = st.checkbox("Embarked at S?")
 
-embarked_q = st.checkbox("Embarked at Q")
-embarked_s = st.checkbox("Embarked at S")
 
-# Prepare input data (same feature order as used during model training)
-input_data = np.array([[
-    pclass,
-    0 if sex == 'Male' else 1,
-    age,
-    fare,
-    int(embarked_q),
-    int(embarked_s)
-]])
+if st.button("Predict"):
+    try:
+        
+        input_data = np.array([[pclass,
+                                0 if sex == 'Male' else 1,
+                                age,
+                                fare,
+                                int(embarked_q),
+                                int(embarked_s)]])
+        
+        
+        input_scaled = scaler.transform(input_data)
 
-# Scale input
-try:
-    input_scaled = scaler.transform(input_data)
-
-    # Predict and display result
-    prediction = model.predict(input_scaled)
-    if prediction[0] == 1:
-        st.success("🟢 Prediction: Survived")
-    else:
-        st.error("🔴 Prediction: Did Not Survive")
-except Exception as e:
-    st.error(f"⚠️ Error during prediction: {e}")
-
+    
+        prediction = model.predict(input_scaled)
+        result = "🟢 Survived" if prediction[0] == 1 else "🔴 Did not survive"
+        st.success(f"Prediction: {result}")
+    
+    except Exception as e:
+        st.error(f"⚠️ Error during prediction: {e}")
