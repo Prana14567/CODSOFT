@@ -15,8 +15,7 @@ age = st.number_input("Age", min_value=0.0, max_value=100.0, step=1.0)
 fare = st.number_input("Fare", min_value=0.0, step=0.1)
 pclass = st.selectbox("Passenger Class", [1, 2, 3])
 sex = st.selectbox("Sex", ['Male', 'Female'])
-sibsp = st.number_input("SibSp", min_value=0, max_value=10, step=1)
-parch = st.number_input("Parch", min_value=0, max_value=10, step=1)
+
 embarked_q = st.checkbox("Embarked at Q")
 embarked_s = st.checkbox("Embarked at S")
 
@@ -25,8 +24,6 @@ input_data = np.array([[
     pclass,
     0 if sex == 'Male' else 1,
     age,
-    sibsp,
-    parch,
     fare,
     int(embarked_q),
     int(embarked_s)
